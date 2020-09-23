@@ -2,6 +2,7 @@ const http = require("http");
 const express = require("express");
 const socketio = require("socket.io");
 const cors = require("cors");
+const path = require("path");
 
 const { addUser, removeUser, getUser, getUsersInRoom } = require("./user");
 
@@ -13,6 +14,10 @@ const io = socketio(server);
 //inside io.on everything happens because of the socket
 app.use(cors());
 app.use(router);
+app.use(express.static("build"));
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 io.on("connection", (socket) => {
   socket.on("join", ({ name, room }, callback) => {
